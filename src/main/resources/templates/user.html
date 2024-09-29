@@ -24,12 +24,21 @@
                 <td th:text="${user.password}"></td>
             </tr>
             <tr>
-                <td>Name:</td>
-                <td th:text="${user.getUsername()}"></td>
+                <td>Username:</td>
+                <td th:text="${user.username}"></td>
             </tr>
             <tr>
                 <td>Email:</td>
                 <td th:text="${user.email}"></td>
+            </tr>
+            <tr>
+                <td>Roles:</td>
+                <td>
+                    <span th:each="role, stat : ${user.roles}">
+                        <span th:if="${stat.count > 1}">,</span>
+                        <span th:text="${role.name}"></span>
+                    </span>
+                </td>
             </tr>
             </tbody>
         </table>
