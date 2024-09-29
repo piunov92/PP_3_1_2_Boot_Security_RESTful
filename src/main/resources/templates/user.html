@@ -8,8 +8,8 @@
     <title>User</title>
 </head>
 <body>
-<div class="card container-sm" style="width: 18rem;">
-    <img th:src="@{/images/user.svg}" class="card-img-top" alt="user avatar">
+<div class="card container-sm w-75">
+    <img th:src="@{/images/user.svg}" class="card-img-top w-25" alt="user avatar">
     <div class="card-body">
         <h4 class="card-title text-dark">User Info</h4>
         <table class="table">
@@ -20,16 +20,21 @@
                 <td th:text="${user.getId()}"></td>
             </tr>
             <tr>
+                <td>Password:</td>
+                <td th:text="${user.password}"></td>
+            </tr>
+            <tr>
                 <td>Name:</td>
-                <td th:text="${user.getName()}"></td>
+                <td th:text="${user.getUsername()}"></td>
             </tr>
             <tr>
                 <td>Email:</td>
-                <td th:text="${user.getEmail()}"></td>
+                <td th:text="${user.email}"></td>
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/}" class="btn btn-primary">Back</a>
+        <a onclick="history.go(-1)" class="btn btn-primary">Back</a>
+        <a th:href="@{/logout}" class="btn btn-large btn-danger">Logout</a>
     </div>
 </div>
 </body>

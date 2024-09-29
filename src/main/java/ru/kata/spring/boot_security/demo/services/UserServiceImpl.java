@@ -10,6 +10,7 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -43,5 +44,22 @@ public class UserServiceImpl implements UserService {
         String encodedPassword = passwordEncoder.encode(password);
         User user = new User(username, encodedPassword, email, roles);
         userRepository.save(user);
+    }
+
+    @Override
+    public User findUserById(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+
+        if (userOptional.isPresent()) {
+            return userOptional.get();
+        } else {
+            throw new RuntimeException("User not found with id: " + id);
+        }
+    }
+
+    @Override
+    public Long getUserIdByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        return (user != null) ? user.getId() : null;
     }
 }

@@ -35,8 +35,8 @@
             <td class="text-end">
                 <div class="d-flex justify-content-end gap-3">
                     <a th:href="@{/user(id=${user.getId()})}" class="btn btn-info">Info</a>
-                    <a th:href="@{/user/edit(id=${user.getId()})}" class="btn btn-warning">Edit</a>
-                    <form th:method="POST" th:action="@{/user/delete(id=${user.getId()})}">
+                    <a th:href="@{/templates/user/edit(id=${user.getId()})}" class="btn btn-warning">Edit</a>
+                    <form th:method="POST" th:action="@{/templates/user/delete(id=${user.getId()})}">
                         <input type="submit" value="Delete" class="btn btn-danger">
                     </form>
                 </div>

@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface UserService {
     void newUser(String username, String password, String email, List<String> roles);
+    User findUserById(Long id);
+    Long getUserIdByUsername(String username);
 }
