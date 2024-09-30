@@ -6,9 +6,12 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class UserForm {
+    private Long userId;
 
     @NotEmpty(message = "The field must not be empty")
     @Size(min = 2, max = 10, message = "invalid value, 2 to 10 characters allowed")
@@ -21,6 +24,5 @@ public class UserForm {
     @Email
     private String email;
 
-    @NotEmpty(message = "The field must not be empty")
-    private String roles;
+    private List<String> roles;
 }

@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Setter
@@ -42,6 +43,12 @@ public class User implements UserDetails {
         this.password = encodedPassword;
         this.email = email;
         this.roles = roles;
+    }
+
+    public Set<String> getRoleNames() {
+        return roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
     }
 
     @Override

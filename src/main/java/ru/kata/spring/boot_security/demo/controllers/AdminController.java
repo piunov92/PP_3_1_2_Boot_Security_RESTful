@@ -6,14 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.models.UserForm;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.services.UserService;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -46,17 +46,46 @@ public class AdminController {
     }
 
     @PostMapping("new")
-    public String registerUser(@ModelAttribute("userForm")  @Valid UserForm userForm, BindingResult bindingResult, Model model) {
+    public String addUser(@ModelAttribute("userForm") @Valid UserForm userForm, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "/admin/new";
         }
         try {
-            List<String> roleNames = Arrays.asList(userForm.getRoles().split(","));
-            userService.newUser(userForm.getUsername(), userForm.getPassword(), userForm.getEmail(), roleNames);
+            userService.newUser(userForm.getUsername(), userForm.getPassword(), userForm.getEmail(), userForm.getRoles());
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("error", "Error when filling the form, please try again");
             return "/admin/new";
+        }
+    }
+
+    @ModelAttribute("allRoles")
+    public List<String> getAllRoles() {
+        return Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+    }
+
+    @GetMapping("edit")
+    public String showEditUserForm(@RequestParam("id") Long id, Model model) {
+        User user = userService.findUserById(id);
+
+        UserForm userForm = new UserForm();
+        userForm.setUserId(user.getId());
+        userForm.setUsername(user.getUsername());
+        userForm.setEmail(user.getEmail());
+        userForm.setRoles(new ArrayList<>(user.getRoleNames()));
+
+        model.addAttribute("userForm", userForm);
+        return "/admin/edit";
+    }
+
+    @PostMapping("edit")
+    public String updateUser(@RequestParam("id") Long id, @ModelAttribute UserForm userForm, Model model) {
+        try {
+            userService.updateUser(userForm , id);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("message", "User update failed");
+            return "/admin/edit";
         }
     }
 }
