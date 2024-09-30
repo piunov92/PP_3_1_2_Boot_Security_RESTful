@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,9 +8,22 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row" >
-
+    <div class="row bg-dark text-light gx-5 p-2">
+        <div class="col">
+            <span>
+                <strong th:text="${username}"></strong>
+                with roles:
+                <span th:each="role, stat : ${roles}">
+                    <span th:if="${stat.count > 1}">,</span>
+                    <span th:text="${role.authority}"></span>
+                </span>
+            </span>
+        </div>
+        <div class="col text-end">
+            <a class="link-underline link-underline-opacity-0 link-secondary" th:href="@{/logout}">Logout</a>
+        </div>
     </div>
+    <br>
     <table class="table">
         <thead class="table-dark">
         <tr>
