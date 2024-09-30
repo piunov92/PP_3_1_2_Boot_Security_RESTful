@@ -2,7 +2,6 @@ package ru.kata.spring.boot_security.demo.controllers;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,15 +22,11 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final UserService userService;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public AdminController(UserRepository userRepository, UserService userService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public AdminController(UserRepository userRepository, UserService userService) {
         this.userRepository = userRepository;
         this.userService = userService;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @ModelAttribute("allRoles")
@@ -87,5 +82,11 @@ public class AdminController {
             model.addAttribute("message", "User update failed");
             return "/admin/edit";
         }
+    }
+
+    @PostMapping("delete")
+    public String deleteUser(@RequestParam("id") Long id) {
+        userRepository.deleteById(id);
+        return "redirect:/admin";
     }
 }
