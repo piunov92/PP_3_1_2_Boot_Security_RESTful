@@ -27,12 +27,11 @@
                 <input type="text" th:field="*{email}" id="_email" class="form-control" required/>
                 <p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
-            <div class="mb-3">
-                <label for="_roles" class="form-label">Roles:</label>
-                <input type="text" th:field="*{roles}" id="_roles" class="form-control" required/>
-                <p style="color: red" th:if="${#fields.hasErrors('roles')}" th:errors="*{roles}"></p>
+            <h5>Select roles:</h5>
+            <div th:each="role : ${allRoles}">
+                <input type="checkbox" th:value="${role}" th:field="*{roles}"/>
+                <label th:text="${role}"></label><br/>
             </div>
-
             <br>
             <input type="submit" value="Add" class="btn btn-success"/>
             <br>

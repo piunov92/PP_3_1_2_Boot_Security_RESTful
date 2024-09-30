@@ -11,7 +11,6 @@ import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -48,12 +47,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void newUser(String username, String password, String email, List<String> roleNames) {
-        if (userRepository.findByUsername(username) != null) {
+    public void newUser(UserForm userForm) {
+        if (userRepository.findByUsername(userForm.getUsername()) != null) {
             throw new IllegalStateException("User already exists");
         }
         Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
+        for (String roleName : userForm.getRoles()) {
             Role role = roleRepository.findByName(roleName);
             if (role == null) {
                 role = new Role(roleName);
@@ -61,9 +60,8 @@ public class UserServiceImpl implements UserService {
             }
             roles.add(role);
         }
-        String encodedPassword = passwordEncoder.encode(password);
-        User user = new User(username, encodedPassword, email, roles);
-        userRepository.save(user);
+        String encodedPassword = passwordEncoder.encode(userForm.getPassword());
+        userRepository.save(new User(userForm.getUsername(), encodedPassword, userForm.getEmail(), roles));
     }
 
     @Override

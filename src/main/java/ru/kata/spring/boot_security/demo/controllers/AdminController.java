@@ -34,6 +34,11 @@ public class AdminController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @ModelAttribute("allRoles")
+    public List<String> getAllRoles() {
+        return Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+    }
+
     @GetMapping
     public String allUsers(Model model) {
         model.addAttribute("users", userRepository.findAll());
@@ -51,7 +56,7 @@ public class AdminController {
             return "/admin/new";
         }
         try {
-            userService.newUser(userForm.getUsername(), userForm.getPassword(), userForm.getEmail(), userForm.getRoles());
+            userService.newUser(userForm);
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("error", "Error when filling the form, please try again");
@@ -59,13 +64,8 @@ public class AdminController {
         }
     }
 
-    @ModelAttribute("allRoles")
-    public List<String> getAllRoles() {
-        return Arrays.asList("ROLE_USER", "ROLE_ADMIN");
-    }
-
     @GetMapping("edit")
-    public String showEditUserForm(@RequestParam("id") Long id, Model model) {
+    public String editUser(@RequestParam("id") Long id, Model model) {
         User user = userService.findUserById(id);
 
         UserForm userForm = new UserForm();
