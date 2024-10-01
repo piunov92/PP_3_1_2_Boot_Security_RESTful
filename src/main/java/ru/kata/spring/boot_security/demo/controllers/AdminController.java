@@ -1,13 +1,13 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.models.UserForm;
@@ -37,32 +37,27 @@ public class AdminController {
     }
 
     @GetMapping
-    public String allUsers(Model model) {
+    public String Users(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+        model.addAttribute("userForm", new UserForm());
+        model.addAttribute("error");
         model.addAttribute("username", userDetails.getUsername());
         model.addAttribute("roles", userDetails.getAuthorities());
         model.addAttribute("users", userRepository.findAll());
         return "/admin/index";
     }
 
-    @GetMapping("new")
-    public String newUser(@ModelAttribute("userForm") UserForm userForm) {
-        return "/admin/new";
-    }
-
-    @PostMapping("new")
-    public String addUser(@ModelAttribute("userForm") @Valid UserForm userForm, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "/admin/new";
-        }
+    @PostMapping("submit")
+    @ResponseBody
+    public ResponseEntity<String> addUser(@ModelAttribute("userForm") UserForm userForm, Model model) {
         try {
             userService.newUser(userForm);
-            return "redirect:/admin";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error when filling the form, please try again");
-            return "/admin/new";
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", "error" );
+            return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
         }
     }
 
@@ -83,7 +78,7 @@ public class AdminController {
     @PostMapping("edit")
     public String updateUser(@RequestParam("id") Long id, @ModelAttribute UserForm userForm, Model model) {
         try {
-            userService.updateUser(userForm , id);
+            userService.updateUser(userForm, id);
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("message", "User update failed");

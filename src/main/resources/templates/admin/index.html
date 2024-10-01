@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -8,8 +8,9 @@
 </head>
 <body>
 <div class="container-fluid">
-    <div class="row bg-dark text-light gx-5 p-2">
-        <div class="col">
+    <header>
+        <div class="row bg-dark text-light gx-5 p-2">
+            <div class="col">
             <span>
                 <strong th:text="${username}"></strong>
                 with roles:
@@ -18,52 +19,155 @@
                     <span th:text="${role.authority}"></span>
                 </span>
             </span>
+            </div>
+            <div class="col text-end">
+                <a class="link-underline link-underline-opacity-0 link-secondary" th:href="@{/logout}">Logout</a>
+            </div>
         </div>
-        <div class="col text-end">
-            <a class="link-underline link-underline-opacity-0 link-secondary" th:href="@{/logout}">Logout</a>
-        </div>
-    </div>
-    <br>
-    <table class="table">
-        <thead class="table-dark">
-        <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Password</th>
-            <th scope="col">Username</th>
-            <th scope="col">Email</th>
-            <th scope="col">Roles</th>
-            <th scope="col" class="text-end"></th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:block th:each="user : ${users}">
-            <td class="align-content-center" th:text="${user.getId()}"></td>
-            <td class="align-content-center" th:text="${user.getPassword()}"></td>
-            <td class="align-content-center" th:text="${user.getUsername()}"></td>
-            <td class="align-content-center" th:text="${user.getEmail()}"></td>
-            <td class="align-content-center">
-                <span th:each="role, stat : ${user.roles}">
-                    <span th:if="${stat.count > 1}">,</span>
-                    <span th:text="${role.name}"></span>
-                </span>
-            </td>
-            <td class="text-end">
-                <div class="d-flex justify-content-end gap-3">
-                    <a th:href="@{/user(id=${user.getId()})}" class="btn btn-info">Info</a>
-                    <a th:href="@{/admin/edit(id=${user.getId()})}" class="btn btn-warning">Edit</a>
-                    <form th:method="POST" th:action="@{/admin/delete(id=${user.getId()})}">
-                        <input type="submit" value="Delete" class="btn btn-danger">
-                    </form>
+    </header>
+    <comment>
+        <div class="row">
+            <div class="col p-0">
+                <div class="d-flex align-items-start mt-2">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist"
+                         aria-orientation="vertical">
+                        <button class="nav-link active" id="v-pills-admin-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-admin" type="button" role="tab" aria-controls="v-pills-admin"
+                                aria-selected="true"
+                                style="width: 13rem; text-align: left; font-size: .85rem;">
+                            Admin
+                        </button>
+                        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill"
+                                data-bs-target="#v-pills-profile" type="button" role="tab"
+                                aria-controls="v-pills-profile" aria-selected="false"
+                                style="width: 13rem; text-align: left; font-size: .85rem;">
+                            User
+                        </button>
+                    </div>
+                    <div class="tab-content flex-grow-1 pe-3" id="v-pills-tabContent">
+                        <!--Admin-->
+                        <div class="tab-pane fade show active" id="v-pills-admin" role="tabpanel"
+                             aria-labelledby="v-pills-admin-tab">
+                            <!--Tabs-->
+                            <div class="d-flex">
+                                <p class="h1 display-6" style="line-height: 1;">Admin panel</p>
+                            </div>
+                            <nav>
+                                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                    <button class="nav-link active" id="nav-users_table-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-users_table" type="button" role="tab"
+                                            aria-controls="nav-users_table" aria-selected="true">Users table
+                                    </button>
+                                    <button class="nav-link" id="nav-new_user-tab" data-bs-toggle="tab"
+                                            data-bs-target="#nav-new_user" type="button" role="tab"
+                                            aria-controls="nav-new_user" aria-selected="false">New user
+                                    </button>
+                                </div>
+                            </nav>
+                            <div class="tab-content" id="nav-tabContent">
+                                <!--users tab-->
+                                <div class="tab-pane fade show active" id="nav-users_table" role="tabpanel"
+                                     aria-labelledby="nav-users_table-tab" tabindex="0">
+                                    <div class="card">
+                                        <h6 class="card-header">All Users</h6>
+                                        <div class="card-body">
+                                            <table class="table">
+                                                <thead>
+                                                <tr>
+                                                    <th scope="col">ID</th>
+                                                    <th scope="col">Password</th>
+                                                    <th scope="col">Username</th>
+                                                    <th scope="col">Email</th>
+                                                    <th scope="col">Roles</th>
+                                                    <th scope="col" class="text-end"></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:block th:each="user : ${users}">
+                                                    <td class="align-content-center" th:text="${user.getId()}"></td>
+                                                    <td class="align-content-center"
+                                                        th:text="${user.getPassword()}"></td>
+                                                    <td class="align-content-center"
+                                                        th:text="${user.getUsername()}"></td>
+                                                    <td class="align-content-center" th:text="${user.getEmail()}"></td>
+                                                    <td class="align-content-center">
+                                                        <span th:each="role, stat : ${user.roles}">
+                                                            <span th:if="${stat.count > 1}">,</span>
+                                                            <span th:text="${role.name}"></span>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <div class="d-flex justify-content-end gap-3">
+                                                            <a th:href="@{/user(id=${user.getId()})}"
+                                                               class="btn btn-info">Info</a>
+                                                            <a th:href="@{/admin/edit(id=${user.getId()})}"
+                                                               class="btn btn-warning">Edit</a>
+                                                            <form th:method="POST"
+                                                                  th:action="@{/admin/delete(id=${user.getId()})}">
+                                                                <input type="submit" value="Delete"
+                                                                       class="btn btn-danger">
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--new user tab-->
+                                <div class="tab-pane fade" id="nav-new_user" role="tabpanel"
+                                     aria-labelledby="nav-new_user-tab" tabindex="0">
+                                    <div class="card">
+                                        <h6 class="card-header">Add new user</h6>
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-center">
+                                                <form id="registration_form" class="form-control-lg w-25" th:method="POST" th:action="@{/admin/submit}"
+                                                      th:object="${userForm}">
+                                                    <div class="md-3 text-center">
+                                                        <label for="_name" class="form-label">Username:</label>
+                                                        <input type="text" th:field="*{username}" id="_name"
+                                                               class="form-control" minlength="2" maxlength="10"
+                                                               required/>
+                                                        <p id="errorMessage" class="fs-6 text-danger" style="display: none;" role="alert"></p>
+                                                    </div>
+                                                        <div class="mb-3 text-center">
+                                                            <label for="_password" class="form-label">Password:</label>
+                                                            <input type="password" th:field="*{password}" id="_password"
+                                                                   class="form-control" required/>
+                                                        </div>
+                                                    <div class="mb-3 text-center">
+                                                        <label for="_email" class="form-label">Email:</label>
+                                                        <input type="email" th:field="*{email}" id="_email"
+                                                               class="form-control" required/>
+                                                    </div>
+                                                    <div class="mb-3 text-center">
+                                                        <label for="selectMultiple" class="form-label">Role</label>
+                                                        <select multiple th:field="*{roles}" class="form-select" id="selectMultiple" size="2">
+                                                            <option th:each="role : ${allRoles}" th:value="${role}" th:text="${role}"></option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="mb-3 text-center">
+                                                        <input type="submit" value="Add new user" class="btn btn-success"/>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--User-->
+                        <div class="tab-pane fade" id="v-pills-profile" role="tabpanel"
+                             aria-labelledby="v-pills-profile-tab">...
+                        </div>
+                    </div>
                 </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-    <p>
-        <a th:href="@{/admin/new}" class="btn btn-large btn-success">New User</a>
-        <a th:href="@{/logout}" class="btn btn-large btn-danger">Logout</a>
-    </p>
+            </div>
+        </div>
+    </comment>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/customSendForm.js}"></script>
 </body>
 </html>
