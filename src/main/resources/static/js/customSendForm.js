@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         try {
-            // Отправляем POST-запрос через fetch
             const response = await fetch(form.action, {
                 method: 'POST',
                 headers: {
@@ -29,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 document.getElementById('successMessage').style.display = 'none';
             }
         } catch (error) {
-            console.error('Ошибка при отправке формы:', error);
+            console.error('Error form submit :(', error);
         }
     });
 });

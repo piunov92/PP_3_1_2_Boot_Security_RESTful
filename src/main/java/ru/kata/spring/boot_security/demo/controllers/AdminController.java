@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -39,12 +38,23 @@ public class AdminController {
     @GetMapping
     public String Users(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        User user = null;
+
+        if (authentication != null && authentication.getPrincipal() instanceof User) {
+            user = (User) authentication.getPrincipal();
+
+        }
+
+        if (user != null) {
+            model.addAttribute("_id", user.getId());
+            model.addAttribute("_username", user.getUsername());
+            model.addAttribute("_password", user.getPassword());
+            model.addAttribute("_email", user.getEmail());
+            model.addAttribute("_roles", user.getAuthorities());
+        }
 
         model.addAttribute("userForm", new UserForm());
         model.addAttribute("error");
-        model.addAttribute("username", userDetails.getUsername());
-        model.addAttribute("roles", userDetails.getAuthorities());
         model.addAttribute("users", userRepository.findAll());
         return "/admin/index";
     }
