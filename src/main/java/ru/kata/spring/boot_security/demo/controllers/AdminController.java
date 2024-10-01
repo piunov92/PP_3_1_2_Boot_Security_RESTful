@@ -3,8 +3,6 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +10,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.models.UserForm;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,22 +35,8 @@ public class AdminController {
     }
 
     @GetMapping
-    public String Users(Model model) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = null;
-
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            user = (User) authentication.getPrincipal();
-
-        }
-
-        if (user != null) {
-            model.addAttribute("_id", user.getId());
-            model.addAttribute("_username", user.getUsername());
-            model.addAttribute("_password", user.getPassword());
-            model.addAttribute("_email", user.getEmail());
-            model.addAttribute("_roles", user.getAuthorities());
-        }
+    public String users(Model model) {
+        Utils.auth(model);
 
         model.addAttribute("userForm", new UserForm());
         model.addAttribute("error");

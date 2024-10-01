@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.utils.Utils;
 
 @Controller
 @RequestMapping("/user")
@@ -21,6 +22,7 @@ public class UserController {
 
     @GetMapping
     public String user(@RequestParam("id") Long id, Model model) {
+        Utils.auth(model);
         model.addAttribute("user", userService.findUserById(id));
         return "user";
     }
