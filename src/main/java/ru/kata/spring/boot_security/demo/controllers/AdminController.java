@@ -1,79 +1,73 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.models.UserForm;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
-    }
-
-    @ModelAttribute("allRoles")
-    public List<String> getAllRoles() {
-        return Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+        this.roleService = roleService;
     }
 
     @GetMapping
-    public String users(Model model) {
+    public String users(@ModelAttribute("user") User user, Model model) {
         Utils.auth(model);
-
-        model.addAttribute("userForm", new UserForm());
-        model.addAttribute("error");
-        model.addAttribute("users", userRepository.findAll());
-        return "/admin/index";
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("allRoles", roleService.getAllRoles());
+        return "admin/index";
     }
 
-    @PostMapping("submit")
-    @ResponseBody
-    public ResponseEntity<String> addUser(@ModelAttribute("userForm") UserForm userForm, Model model) {
+//    @GetMapping("new")
+//    public String registerUser(@ModelAttribute("user") User user, Model model) {
+//        model.addAttribute("allRoles", roleService.getAllRoles());
+//        return "/admin/new";
+//    }
+
+    @PostMapping("new")
+    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,  @RequestParam List<String> roleNames, Model model) {
+        if (bindingResult.hasErrors()) {
+            return "admin/new";
+        }
         try {
-            userService.newUser(userForm);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            model.addAttribute("error", "error" );
-            return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
+            userService.registerUser(user, roleNames);
+            return "redirect:/admin";
+        } catch (Exception e) {
+            model.addAttribute("error", "Error when filling the form, please try again");
+            return "admin/new";
         }
     }
 
     @GetMapping("edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         User user = userService.findUserById(id);
+        List<Role> allRoles = roleService.getAllRoles();
 
-        UserForm userForm = new UserForm();
-        userForm.setUserId(user.getId());
-        userForm.setUsername(user.getUsername());
-        userForm.setEmail(user.getEmail());
-        userForm.setRoles(new ArrayList<>(user.getRoleNames()));
-
-        model.addAttribute("userForm", userForm);
-        return "/admin/edit";
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", allRoles);
+        return "admin/edit";
     }
 
     @PostMapping("edit")
-    public String updateUser(@RequestParam("id") Long id, @ModelAttribute UserForm userForm, Model model) {
+    public String updateUser(@ModelAttribute User user, @RequestParam List<String> roleNames, Model model) {
         try {
-            userService.updateUser(userForm, id);
+            userService.updateUser(user, roleNames);
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("message", "User update failed");
@@ -83,7 +77,7 @@ public class AdminController {
 
     @PostMapping("delete")
     public String deleteUser(@RequestParam("id") Long id) {
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 }

@@ -90,12 +90,12 @@
                                                     <td class="align-content-center"
                                                         th:text="${user.getUsername()}"></td>
                                                     <td class="align-content-center" th:text="${user.getEmail()}"></td>
-                                                    <td class="align-content-center">
-                                                        <span th:each="role, stat : ${user.roles}">
-                                                            <span th:if="${stat.count > 1}">,</span>
-                                                            <span th:text="${role.name}"></span>
-                                                        </span>
-                                                    </td>
+                                                    <!--                                                    <td class="align-content-center">-->
+                                                    <!--                                                        <span th:each="role, stat : ${user.roles}">-->
+                                                    <!--                                                            <span th:if="${stat.count > 1}">,</span>-->
+                                                    <!--                                                            <span th:text="${role.name}"></span>-->
+                                                    <!--                                                        </span>-->
+                                                    <!--                                                    </td>-->
                                                     <td class="text-end">
                                                         <div class="d-flex justify-content-end gap-3">
                                                             <a th:href="@{/admin/edit(id=${user.getId()})}"
@@ -121,8 +121,8 @@
                                         <div class="card-body">
                                             <div class="d-flex justify-content-center">
                                                 <form id="registration_form" class="form-control-lg w-25"
-                                                      th:method="POST" th:action="@{/admin/submit}"
-                                                      th:object="${userForm}">
+                                                      th:method="POST" th:action="@{/admin/new}"
+                                                      th:object="${user}">
                                                     <div class="md-3 text-center">
                                                         <label for="_name" class="form-label">Username:</label>
                                                         <input type="text" th:field="*{username}" id="_name"
@@ -142,11 +142,13 @@
                                                                class="form-control" required/>
                                                     </div>
                                                     <div class="mb-3 text-center">
-                                                        <label for="selectMultiple" class="form-label">Role</label>
-                                                        <select multiple th:field="*{roles}" class="form-select"
-                                                                id="selectMultiple" size="2">
-                                                            <option th:each="role : ${allRoles}" th:value="${role}"
-                                                                    th:text="${role}"></option>
+                                                        <label for="new_user_tab_roles" class="form-label">Role</label>
+                                                        <select class="form-select" id="new_user_tab_roles"
+                                                                name="roleNames" multiple>
+                                                            <option th:each="role : ${allRoles}"
+                                                                    th:value="${role.name}"
+                                                                    th:text="${role.name}"
+                                                                    th:selected="${user.roles.contains(role)}"></option>
                                                         </select>
                                                     </div>
                                                     <div class="mb-3 text-center">
@@ -184,9 +186,9 @@
                                         <tr th:block>
                                             <td class="align-content-center" th:text="${_id}"></td>
                                             <td class="align-content-center"
-                                                th:text="${_username}"></td>
-                                            <td class="align-content-center"
                                                 th:text="${_password}"></td>
+                                            <td class="align-content-center"
+                                                th:text="${_username}"></td>
                                             <td class="align-content-center" th:text="${_email}"></td>
                                             <td class="align-content-center">
                                                 <span th:each="role, stat : ${_roles}">

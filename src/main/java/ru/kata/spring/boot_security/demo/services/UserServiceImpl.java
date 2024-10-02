@@ -6,13 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.models.UserForm;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -46,39 +43,51 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
     @Transactional
-    public void newUser(UserForm userForm) {
-        if (userRepository.findByUsername(userForm.getUsername()) != null) {
+    public void registerUser(User user, List<String> roleNames) {
+        if (userRepository.findByUsername(user.getUsername()) != null) {
             throw new IllegalStateException("User already exists");
         }
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userForm.getRoles()) {
-            Role role = roleRepository.findByName(roleName);
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByName(roleName).orElse(null);
             if (role == null) {
                 role = new Role(roleName);
                 roleRepository.save(role);
             }
             roles.add(role);
         }
-        String encodedPassword = passwordEncoder.encode(userForm.getPassword());
-        userRepository.save(new User(userForm.getUsername(), encodedPassword, userForm.getEmail(), roles));
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        userRepository.save(new User(user.getUsername(), encodedPassword, user.getEmail(), roles));
     }
 
     @Override
     @Transactional
-    public void updateUser(UserForm userForm, Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("User not found."));
-        user.setUsername(userForm.getUsername());
-        user.setEmail(userForm.getEmail());
+    public void updateUser(User user, List<String> roleNames) throws Exception {
+        User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("User not found."));
 
-        if (userForm.getPassword() != null && !userForm.getPassword().isEmpty()) {
-            String encodedPassword = passwordEncoder.encode(userForm.getPassword());
+        if (!foundUser.getUsername().equals(user.getUsername())) {
+            Optional<User> userWithSameUsername = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+            if (userWithSameUsername.isPresent()) {
+                throw new Exception("Username " + user.getUsername() + " is already taken");
+            }
+        }
+        foundUser.setUsername(user.getUsername());
+        foundUser.setEmail(user.getEmail());
+
+        if (foundUser.getPassword() != null && !foundUser.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(foundUser.getPassword());
             user.setPassword(encodedPassword);
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : userForm.getRoles()) {
-            Role role = roleRepository.findByName(roleName);
+        for (String roleName : roleNames) {
+            Role role = roleRepository.findByName(roleName).orElse(null);
             if (role != null) {
                 roles.add(role);
             } else {
@@ -88,6 +97,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setRoles(roles);
+
         userRepository.save(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }

@@ -9,6 +9,8 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -28,10 +30,17 @@ public class DataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        if (roleRepository.findByName("ROLE_ADMIN") == null) {
-            Role adminRole = new Role();
-            adminRole.setName("ROLE_ADMIN");
-            roleRepository.save(adminRole);
+        List<String> roleNames = Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+
+        for (String roleName : roleNames) {
+            if (roleRepository.findByName(roleName).isEmpty()) {
+                Role role = new Role();
+                role.setName(roleName);
+                roleRepository.save(role);
+                System.out.println("Role " + roleName + " has been created");
+            } else {
+                System.out.println("Role " + roleName + " already exists");
+            }
         }
 
         if (userRepository.findByUsername("admin") == null) {
@@ -40,7 +49,7 @@ public class DataInitializer implements CommandLineRunner {
             adminUser.setEmail("admin@admin.com");
             adminUser.setPassword(passwordEncoder.encode("admin"));
 
-            Role adminRole = roleRepository.findByName("ROLE_ADMIN");
+            Role adminRole = roleRepository.findByName("ROLE_ADMIN").orElseThrow(() -> new RuntimeException("No role found"));
             adminUser.getRoles().add(adminRole);
             userRepository.save(adminUser);
         }
