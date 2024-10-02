@@ -1,13 +1,14 @@
 package ru.kata.spring.boot_security.demo.services;
 
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.models.UserForm;
 
 import java.util.List;
 
 public interface UserService {
-    void newUser(UserForm userForm);
-    void updateUser(UserForm userForm, Long id);
+    List<User> getAllUsers();
+    void registerUser(User user, List<String> roleNames);
+    void updateUser(User user, List<String> roleNames) throws Exception;
+    void deleteUser(Long id);
     User findUserById(Long id);
     Long getUserIdByUsername(String username);
 }

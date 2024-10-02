@@ -10,7 +10,7 @@
 <div class="container-sm">
     <div class="col-md-4">
         <h2>Edit User</h2>
-        <form th:method="POST" th:action="@{/admin/edit(id=${userForm.userId})}" th:object="${userForm}">
+        <form th:method="POST" th:action="@{/admin/edit(id=${user.id})}" th:object="${user}">
             <div class="mb-3">
                 <label for="_name" class="form-label">Username:</label>
                 <input type="text" th:field="*{username}" id="_name" class="form-control"/>
@@ -26,12 +26,13 @@
                 <input type="text" th:field="*{email}" id="_email" class="form-control"/>
                 <p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
-            <h5>Select roles:</h5>
-            <div th:each="role : ${allRoles}">
-                <input type="checkbox" th:value="${role}" th:field="*{roles}"
-                       th:checked="${userForm.roles.contains(role)}" />
-                <label th:text="${role}"></label><br/>
-            </div>
+            <label for="roles">Select roles:</label>
+            <select class="form-select" id="roles" name="roleNames" multiple>
+                <option th:each="role : ${allRoles}"
+                        th:value="${role.name}"
+                        th:text="${role.name}"
+                        th:selected="${user.roles.contains(role)}"></option>
+            </select>
             <br>
             <a onclick="history.go(-1)" class="btn btn-primary">Back</a>
             <input type="submit" value="Update" class="btn btn-success"/>

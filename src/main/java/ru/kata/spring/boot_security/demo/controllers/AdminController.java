@@ -6,52 +6,44 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.models.UserForm;
-import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.repositories.UserRepository;
+import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-
-    private final UserRepository userRepository;
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public AdminController(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
-    }
-
-    @ModelAttribute("allRoles")
-    public List<String> getAllRoles() {
-        return Arrays.asList("ROLE_USER", "ROLE_ADMIN");
+        this.roleService = roleService;
     }
 
     @GetMapping
-    public String allUsers(Model model) {
-        model.addAttribute("users", userRepository.findAll());
+    public String users(Model model) {
+        model.addAttribute("users", userService.getAllUsers());
         return "/admin/index";
     }
 
     @GetMapping("new")
-    public String newUser(@ModelAttribute("userForm") UserForm userForm) {
+    public String registerUser(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("allRoles", roleService.getAllRoles());
         return "/admin/new";
     }
 
     @PostMapping("new")
-    public String addUser(@ModelAttribute("userForm") @Valid UserForm userForm, BindingResult bindingResult, Model model) {
+    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,  @RequestParam List<String> roleNames, Model model) {
         if (bindingResult.hasErrors()) {
             return "/admin/new";
         }
         try {
-            userService.newUser(userForm);
+            userService.registerUser(user, roleNames);
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("error", "Error when filling the form, please try again");
@@ -62,21 +54,17 @@ public class AdminController {
     @GetMapping("edit")
     public String editUser(@RequestParam("id") Long id, Model model) {
         User user = userService.findUserById(id);
+        List<Role> allRoles = roleService.getAllRoles();
 
-        UserForm userForm = new UserForm();
-        userForm.setUserId(user.getId());
-        userForm.setUsername(user.getUsername());
-        userForm.setEmail(user.getEmail());
-        userForm.setRoles(new ArrayList<>(user.getRoleNames()));
-
-        model.addAttribute("userForm", userForm);
+        model.addAttribute("user", user);
+        model.addAttribute("allRoles", allRoles);
         return "/admin/edit";
     }
 
     @PostMapping("edit")
-    public String updateUser(@RequestParam("id") Long id, @ModelAttribute UserForm userForm, Model model) {
+    public String updateUser(@ModelAttribute User user, @RequestParam List<String> roleNames, Model model) {
         try {
-            userService.updateUser(userForm , id);
+            userService.updateUser(user, roleNames);
             return "redirect:/admin";
         } catch (Exception e) {
             model.addAttribute("message", "User update failed");
@@ -86,7 +74,7 @@ public class AdminController {
 
     @PostMapping("delete")
     public String deleteUser(@RequestParam("id") Long id) {
-        userRepository.deleteById(id);
+        userService.deleteUser(id);
         return "redirect:/admin";
     }
 }

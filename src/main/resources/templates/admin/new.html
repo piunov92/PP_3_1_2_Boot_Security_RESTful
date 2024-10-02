@@ -11,7 +11,7 @@
 <div class="container-sm">
     <div class="col-md-4">
         <h2>New User</h2>
-        <form th:method="POST" th:action="@{/admin/new}" th:object="${userForm}">
+        <form th:method="POST" th:action="@{/admin/new}" th:object="${user}">
             <div class="mb-3">
                 <label for="_name" class="form-label">Name:</label>
                 <input type="text" th:field="*{username}" id="_name" class="form-control" required/>
@@ -27,11 +27,13 @@
                 <input type="text" th:field="*{email}" id="_email" class="form-control" required/>
                 <p style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
-            <h5>Select roles:</h5>
-            <div th:each="role : ${allRoles}">
-                <input type="checkbox" th:value="${role}" th:field="*{roles}"/>
-                <label th:text="${role}"></label><br/>
-            </div>
+            <label for="roles">Select roles:</label>
+            <select class="form-select" id="roles" name="roleNames" multiple>
+                <option th:each="role : ${allRoles}"
+                        th:value="${role.name}"
+                        th:text="${role.name}"
+                        th:selected="${user.roles.contains(role)}"></option>
+            </select>
             <br>
             <input type="submit" value="Add" class="btn btn-success"/>
             <br>
