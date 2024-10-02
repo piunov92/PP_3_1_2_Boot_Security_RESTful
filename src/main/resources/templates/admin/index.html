@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
-<html lang="en">
+<html lang="us" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
@@ -26,149 +25,6 @@
         </div>
     </header>
     <comment>
-        <!-- edit modal -->
-        <div>
-            <form th:method="POST" th:action="@{/edit}" th:object="${user}">
-                <div class="modal fade" id="edit_modal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
-                     aria-labelledby="edit_modal_label" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Edit user</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-6 mx-auto text-center">
-                                        <div class="mb-3">
-                                            <label for="edit_name" class="form-label font-weight-bold mb-0">Username</label>
-                                            <input type="text" th:field="*{username}" id="edit_name" class="form-control"/>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_password"
-                                                   class="form-label font-weight-bold mb-0">Password</label>
-                                            <input type="password" th:field="*{password}" id="edit_password"
-                                                   class="form-control"/>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="edit_email" class="form-label font-weight-bold mb-0">Email</label>
-                                            <input type="text" th:field="*{email}" id="edit_email" class="form-control"/>
-                                        </div>
-                                        <div>
-                                            <label class="form-label font-weight-bold mb-0" for="edit_roles">Role</label>
-                                            <select class="form-select" id="edit_roles" name="roleNames" multiple>
-                                                <option th:each="role : ${allRoles}"
-                                                        th:value="${role.name}"
-                                                        th:text="${role.name}"
-                                                        th:selected="${user.roles.contains(role)}"></option>
-                                            </select>
-                                        </div>
-                                        <!--                                <input type="submit" value="Update" class="btn btn-success"/>-->
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Edit</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--                <div class="modal" tabindex="-1"-->
-                <!--                     th:id="${'editModal'+ user.id}"-->
-                <!--                     aria-labelledby="EditModalLabel" aria-hidden="true">-->
-                <!--                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">-->
-                <!--                        <div class="modal-content">-->
-                <!--                            <div class="modal-header">-->
-                <!--                                <h5 class="modal-title">Edit user</h5>-->
-                <!--                                <button type="button" class="close"-->
-                <!--                                        data-dismiss="modal" aria-label="Close">-->
-                <!--                                    <span aria-hidden="true">&times;</span>-->
-                <!--                                </button>-->
-                <!--                            </div>-->
-                <!--                            <div class="modal-body">-->
-                <!--                                <div class="row">-->
-                <!--                                    <div class="col-md-6 mx-auto text-center">-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit_username"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">Username</label>-->
-                <!--                                            <input class="form-control" type="text"-->
-                <!--                                                   id="edit_username"-->
-                <!--                                                   th:value="*{username}"-->
-                <!--                                                   name="username"-->
-                <!--                                                   minlength="2" maxlength="30"-->
-                <!--                                                   required>-->
-                <!--                                        </div>-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit-lastName"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">LastName</label>-->
-                <!--                                            <input class="form-control" type="text"-->
-                <!--                                                   id="edit-lastName"-->
-                <!--                                                   th:value="*{lastName}"-->
-                <!--                                                   name="lastName"-->
-                <!--                                                   min="2" maxlength="30"-->
-                <!--                                                   required>-->
-                <!--                                        </div>-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit-age"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">Age</label>-->
-                <!--                                            <input class="form-control"-->
-                <!--                                                   type="number"-->
-                <!--                                                   id="edit-age"-->
-                <!--                                                   th:value="*{age}"-->
-                <!--                                                   name="age"-->
-                <!--                                                   min="1" max="120"-->
-                <!--                                                   required>-->
-                <!--                                        </div>-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit-email"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">Email</label>-->
-                <!--                                            <input class="form-control" type="email"-->
-                <!--                                                   id="edit-email"-->
-                <!--                                                   th:value="*{email}"-->
-                <!--                                                   name="email"-->
-                <!--                                                   required>-->
-                <!--                                        </div>-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit-password"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">Password</label>-->
-                <!--                                            <input class="form-control" type="text"-->
-                <!--                                                   id="edit-password"-->
-                <!--                                                   name="password"-->
-                <!--                                                   readonly>-->
-                <!--                                        </div>-->
-                <!--                                        <div class="form-group mb-3">-->
-                <!--                                            <label for="edit-roles"-->
-                <!--                                                   class="form-label font-weight-bold mb-0">Role</label>-->
-                <!--                                            <select multiple class="form-control"-->
-                <!--                                                    id="edit-roles"-->
-                <!--                                                    aria-label="Select role"-->
-                <!--                                                    th:name="role"-->
-                <!--                                                    size="2"-->
-                <!--                                                    required>-->
-                <!--                                                <option value="ROLE_ADMIN">ADMIN-->
-                <!--                                                </option>-->
-                <!--                                                <option value="ROLE_USER">USER-->
-                <!--                                                </option>-->
-                <!--                                            </select>-->
-                <!--                                        </div>-->
-                <!--                                    </div>-->
-                <!--                                </div>-->
-                <!--                            </div>-->
-                <!--                            <div class="modal-footer">-->
-                <!--                                <button type="button" class="btn btn-secondary"-->
-                <!--                                        data-dismiss="modal">Close-->
-                <!--                                </button>-->
-                <!--                                <input type="submit" class="btn btn-primary"-->
-                <!--                                       value="Edit">-->
-                <!--                            </div>-->
-                <!--                        </div>-->
-                <!--                    </div>-->
-                <!--                </div>-->
-            </form>
-        </div>
-
         <div class="row">
             <div class="col p-0">
                 <div class="d-flex align-items-start mt-2">
@@ -241,12 +97,9 @@
                                                     </td>
                                                     <td class="text-end">
                                                         <div class="d-flex justify-content-end gap-3">
-                                                            <a th:href="@{/admin/edit(id=${user.getId()})}"
-                                                               class="btn btn-warning">Edit</a>
-                                                            <!-- Кнопка-триггер модального окна -->
-                                                            <button type="button" class="btn btn-primary"
-                                                                    data-bs-toggle="modal" data-bs-target="#edit_modal">
-                                                                Modal
+                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                                    data-bs-toggle="modal"
+                                                                    th:data-bs-target="'#edit_modal_'+${user.id}">Edit
                                                             </button>
                                                             <form th:method="POST"
                                                                   th:action="@{/admin/delete(id=${user.getId()})}">
@@ -255,6 +108,85 @@
                                                             </form>
                                                         </div>
                                                     </td>
+                                                    <!-- edit modal -->
+                                                    <div>
+                                                        <form th:method="POST"
+                                                              th:action="@{/admin/update(id=${user.id})}"
+                                                              th:object="${user}" id="edit_form">
+                                                            <div class="modal fade" th:id="${'edit_modal_'+user.id}"
+                                                                 tabindex="-1"
+                                                                 aria-labelledby="edit_modal_label" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Edit user</h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-md-6 mx-auto text-center">
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'edit_name_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">Username</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{username}"
+                                                                                               name="username"
+                                                                                               th:id="${'edit_name_'+user.id}"
+                                                                                               class="form-control"
+                                                                                               required/>
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'edit_password_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">Password</label>
+                                                                                        <input type="password"
+                                                                                               th:field="*{password}"
+                                                                                               th:id="${'edit_password_'+user.id}"
+                                                                                               class="form-control"
+                                                                                               required/>
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'edit_email_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">Email</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{email}"
+                                                                                               th:id="${'edit_email_'+user.id}"
+                                                                                               name="email"
+                                                                                               class="form-control"
+                                                                                               required/>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <label class="form-label font-weight-bold mb-0"
+                                                                                               th:for="${'edit_roles'+user.id}">Role</label>
+                                                                                        <select class="form-select"
+                                                                                                th:id="${'edit_roles'+user.id}"
+                                                                                                name="roleNames"
+                                                                                                multiple>
+                                                                                            <option th:each="role : ${allRoles}"
+                                                                                                    th:value="${role.name}"
+                                                                                                    th:text="${role.name}"
+                                                                                                    th:selected="${user.roles.contains(role)}"></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">Close
+                                                                            </button>
+                                                                            <button type="submit"
+                                                                                    value="Update"
+                                                                                    class="btn btn-success">Edit
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
                                                 </tr>
                                                 </tbody>
                                             </table>
@@ -358,6 +290,6 @@
     </comment>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/registerUser.js}"></script>
+<script th:src="@{/js/registerUserNoReload.js}"></script>
 </body>
 </html>

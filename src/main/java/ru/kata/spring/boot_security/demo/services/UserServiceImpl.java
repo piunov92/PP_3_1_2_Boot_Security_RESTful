@@ -80,9 +80,9 @@ public class UserServiceImpl implements UserService {
         foundUser.setUsername(user.getUsername());
         foundUser.setEmail(user.getEmail());
 
-        if (foundUser.getPassword() != null && !foundUser.getPassword().isEmpty()) {
-            String encodedPassword = passwordEncoder.encode(foundUser.getPassword());
-            user.setPassword(encodedPassword);
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            foundUser.setPassword(encodedPassword);
         }
 
         Set<Role> roles = new HashSet<>();
@@ -97,8 +97,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         user.setRoles(roles);
-
-        userRepository.save(user);
+        userRepository.save(foundUser);
     }
 
     @Override

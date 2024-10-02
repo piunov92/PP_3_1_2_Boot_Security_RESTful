@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
@@ -48,25 +47,13 @@ public class AdminController {
         }
     }
 
-    @GetMapping("edit")
-    public String editUser(@RequestParam("id") Long id, Model model) {
-        User user = userService.findUserById(id);
-        List<Role> allRoles = roleService.getAllRoles();
-
-        model.addAttribute("user", user);
-        model.addAttribute("allRoles", allRoles);
-        return "admin/edit";
-    }
-
-    @PostMapping("edit")
-    public String updateUser(@ModelAttribute User user, @RequestParam List<String> roleNames, Model model) {
+    @PostMapping("update")
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
         try {
             userService.updateUser(user, roleNames);
             return "redirect:/admin";
-        } catch (Exception e) {
-            model.addAttribute("message", "User update failed");
-            return "/admin/edit";
-        }
+        } catch (Exception ignored) {}
+        return "redirect:/admin";
     }
 
     @PostMapping("delete")
