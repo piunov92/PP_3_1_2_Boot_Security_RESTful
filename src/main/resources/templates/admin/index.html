@@ -97,15 +97,17 @@
                                                     </td>
                                                     <td class="text-end">
                                                         <div class="d-flex justify-content-end gap-3">
-                                                            <button type="button" class="btn btn-warning btn-sm"
+                                                            <button type="button" class="btn btn-primary"
+                                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 1.1rem;"
                                                                     data-bs-toggle="modal"
                                                                     th:data-bs-target="'#edit_modal_'+${user.id}">Edit
                                                             </button>
-                                                            <form th:method="POST"
-                                                                  th:action="@{/admin/delete(id=${user.getId()})}">
-                                                                <input type="submit" value="Delete"
-                                                                       class="btn btn-danger">
-                                                            </form>
+                                                            <button type="button" class="btn btn-danger"
+                                                                    style="--bs-btn-padding-y: .25rem; --bs-btn-font-size: 1.1rem;"
+                                                                    data-bs-toggle="modal"
+                                                                    th:data-bs-target="'#delete_modal_'+${user.id}">
+                                                                Delete
+                                                            </button>
                                                         </div>
                                                     </td>
                                                     <!-- edit modal -->
@@ -129,6 +131,16 @@
                                                                                 <div class="col-md-6 mx-auto text-center">
                                                                                     <div class="mb-3">
                                                                                         <label th:for="${'edit_name_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">ID</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{id}"
+                                                                                               name="id"
+                                                                                               th:id="${'edit_name_'+user.id}"
+                                                                                               class="form-control"
+                                                                                               disabled readonly/>
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'edit_name_'+user.id}"
                                                                                                class="form-label font-weight-bold mb-0">Username</label>
                                                                                         <input type="text"
                                                                                                th:value="*{username}"
@@ -143,8 +155,7 @@
                                                                                         <input type="password"
                                                                                                th:field="*{password}"
                                                                                                th:id="${'edit_password_'+user.id}"
-                                                                                               class="form-control"
-                                                                                               required/>
+                                                                                               class="form-control"/>
                                                                                     </div>
                                                                                     <div class="mb-3">
                                                                                         <label th:for="${'edit_email_'+user.id}"
@@ -179,7 +190,88 @@
                                                                             </button>
                                                                             <button type="submit"
                                                                                     value="Update"
-                                                                                    class="btn btn-success">Edit
+                                                                                    class="btn btn-primary">Edit
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                    <!-- delete modal -->
+                                                    <div>
+                                                        <form th:method="POST"
+                                                              th:action="@{/admin/delete(id=${user.id})}"
+                                                              th:object="${user}" id="delete_form">
+                                                            <div class="modal fade" th:id="${'delete_modal_'+user.id}"
+                                                                 tabindex="-1"
+                                                                 aria-labelledby="edit_modal_label" aria-hidden="true">
+                                                                <div class="modal-dialog modal-dialog-centered">
+                                                                    <div class="modal-content">
+                                                                        <div class="modal-header">
+                                                                            <h5 class="modal-title">Delete user</h5>
+                                                                            <button type="button" class="btn-close"
+                                                                                    data-bs-dismiss="modal"
+                                                                                    aria-label="close"></button>
+                                                                        </div>
+                                                                        <div class="modal-body">
+                                                                            <div class="row">
+                                                                                <div class="col-md-6 mx-auto text-center">
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'delete_name_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">ID</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{id}"
+                                                                                               name="id"
+                                                                                               th:id="${'delete_name_'+user.id}"
+                                                                                               class="form-control"
+                                                                                               disabled readonly/>
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'delete_name_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">Username</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{username}"
+                                                                                               name="username"
+                                                                                               th:id="${'delete_name_'+user.id}"
+                                                                                               class="form-control"
+                                                                                               disabled readonly/>
+                                                                                    </div>
+                                                                                    <div class="mb-3">
+                                                                                        <label th:for="${'delete_email_'+user.id}"
+                                                                                               class="form-label font-weight-bold mb-0">Email</label>
+                                                                                        <input type="text"
+                                                                                               th:value="*{email}"
+                                                                                               th:id="${'delete_email_'+user.id}"
+                                                                                               name="email"
+                                                                                               class="form-control"
+                                                                                               disabled readonly/>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <label class="form-label font-weight-bold mb-0"
+                                                                                               th:for="${'delete_roles'+user.id}">Role</label>
+                                                                                        <select class="form-select"
+                                                                                                th:id="${'delete_roles'+user.id}"
+                                                                                                name="roleNames"
+                                                                                                multiple
+                                                                                                disabled>
+                                                                                            <option th:each="role : ${allRoles}"
+                                                                                                    th:value="${role.name}"
+                                                                                                    th:text="${role.name}"
+                                                                                                    th:selected="${user.roles.contains(role)}"></option>
+                                                                                        </select>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal-footer">
+                                                                            <button type="button"
+                                                                                    class="btn btn-secondary"
+                                                                                    data-bs-dismiss="modal">Close
+                                                                            </button>
+                                                                            <button type="submit"
+                                                                                    value="Delete"
+                                                                                    class="btn btn-danger">Delete
                                                                             </button>
                                                                         </div>
                                                                     </div>
