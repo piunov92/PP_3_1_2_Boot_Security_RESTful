@@ -21,7 +21,8 @@
             </span>
             </div>
             <div class="col text-end">
-                <a class="link-underline link-underline-opacity-0 link-secondary" th:href="@{/logout}">Logout</a>
+                <a class="link-underline link-underline-opacity-0 link-secondary" href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
+                <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
             </div>
         </div>
     </header>

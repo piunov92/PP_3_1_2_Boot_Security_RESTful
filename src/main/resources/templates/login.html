@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+<div class="login-container">
+    <div class="d-flex justify-content-center">
+            <div class="row">
+                <div class="pt-5 pb-2">
+                    <h3><b>Please sign in</b></h3>
+                </div>
+                <form role="form" th:action="@{/login}" method="post">
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="username" placeholder="Username" aria-label="Username" required>
+                    </div>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="password" name="password" placeholder="Password" aria-label="Password" required>
+                    </div>
+                    <div class="d-grid gap-2 pt-2 col-sm-8">
+                        <button class="btn btn-primary" type="submit" value="Sign in">Sign in</button>
+                    </div>
+                    <div class="col-sm-8 pt-3" th:if="${param.error}">
+                        <p class="text-danger">Invalid username or password</p>
+                    </div>
+                </form>
+            </div>
+    </div>
+</div>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
