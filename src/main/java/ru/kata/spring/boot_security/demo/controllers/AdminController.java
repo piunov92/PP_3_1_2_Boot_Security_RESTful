@@ -1,15 +1,15 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.utils.Utils;
 
 import java.util.List;
 
@@ -26,50 +26,34 @@ public class AdminController {
     }
 
     @GetMapping
-    public String users(Model model) {
+    public String users(@ModelAttribute("user") User user, Model model) {
+        Utils.auth(model);
+
         model.addAttribute("users", userService.getAllUsers());
-        return "/admin/index";
-    }
-
-    @GetMapping("new")
-    public String registerUser(@ModelAttribute("user") User user, Model model) {
         model.addAttribute("allRoles", roleService.getAllRoles());
-        return "/admin/new";
+        model.addAttribute("error");
+        return "admin/index";
     }
 
-    @PostMapping("new")
-    public String saveUser(@ModelAttribute("user") @Valid User user, BindingResult bindingResult,  @RequestParam List<String> roleNames, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "/admin/new";
-        }
+    @PostMapping("register")
+    @ResponseBody
+    public ResponseEntity<String> saveUser(@ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
         try {
             userService.registerUser(user, roleNames);
-            return "redirect:/admin";
-        } catch (Exception e) {
-            model.addAttribute("error", "Error when filling the form, please try again");
-            return "/admin/new";
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalStateException e) {
+            model.addAttribute("error", "error" );
+            return new ResponseEntity<>("User already exists", HttpStatus.CONFLICT);
         }
     }
 
-    @GetMapping("edit")
-    public String editUser(@RequestParam("id") Long id, Model model) {
-        User user = userService.findUserById(id);
-        List<Role> allRoles = roleService.getAllRoles();
-
-        model.addAttribute("user", user);
-        model.addAttribute("allRoles", allRoles);
-        return "/admin/edit";
-    }
-
-    @PostMapping("edit")
-    public String updateUser(@ModelAttribute User user, @RequestParam List<String> roleNames, Model model) {
+    @PostMapping("update")
+    public String updateUser(@ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
         try {
             userService.updateUser(user, roleNames);
             return "redirect:/admin";
-        } catch (Exception e) {
-            model.addAttribute("message", "User update failed");
-            return "/admin/edit";
-        }
+        } catch (Exception ignored) {}
+        return "redirect:/admin";
     }
 
     @PostMapping("delete")
