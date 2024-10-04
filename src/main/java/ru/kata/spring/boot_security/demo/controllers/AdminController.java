@@ -47,17 +47,17 @@ public class AdminController {
         }
     }
 
-    @PostMapping("update")
-    public String updateUser(@ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
+    @PostMapping("update/{id}")
+    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
         try {
-            userService.updateUser(user, roleNames);
+            userService.updateUser(id, user, roleNames);
             return "redirect:/admin";
         } catch (Exception ignored) {}
         return "redirect:/admin";
     }
 
-    @PostMapping("delete")
-    public String deleteUser(@RequestParam("id") Long id) {
+    @PostMapping("delete/{id}")
+    public String deleteUser(/*@RequestParam("id")*/ @PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }

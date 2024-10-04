@@ -68,8 +68,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(User user, List<String> roleNames) throws Exception {
-        User foundUser = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("User not found."));
+    public void updateUser(Long id, User user, List<String> roleNames) throws Exception {
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("User not found."));
 
         if (!foundUser.getUsername().equals(user.getUsername())) {
             Optional<User> userWithSameUsername = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
@@ -96,7 +96,7 @@ public class UserServiceImpl implements UserService {
                 roles.add(role);
             }
         }
-        user.setRoles(roles);
+        foundUser.setRoles(roles);
         userRepository.save(foundUser);
     }
 

@@ -114,7 +114,7 @@
                                                     <!-- edit modal -->
                                                     <div>
                                                         <form th:method="POST"
-                                                              th:action="@{/admin/update(id=${user.id})}"
+                                                              th:action="@{/admin/update/{id}(id=${user.id})}"
                                                               th:object="${user}" id="edit_form">
                                                             <div class="modal fade" th:id="${'edit_modal_'+user.id}"
                                                                  tabindex="-1"
@@ -202,7 +202,7 @@
                                                     <!-- delete modal -->
                                                     <div>
                                                         <form th:method="POST"
-                                                              th:action="@{/admin/delete(id=${user.id})}"
+                                                              th:action="@{/admin/delete/{id}(id=${user.id})}"
                                                               th:object="${user}" id="delete_form">
                                                             <div class="modal fade" th:id="${'delete_modal_'+user.id}"
                                                                  tabindex="-1"
