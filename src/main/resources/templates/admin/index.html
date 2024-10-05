@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>Users</title>
 </head>
 <body>
@@ -20,7 +21,8 @@
             </span>
             </div>
             <div class="col text-end">
-                <a class="link-underline link-underline-opacity-0 link-secondary" href="#" onclick="document.getElementById('logoutForm').submit()">Logout</a>
+                <a class="link-underline link-underline-opacity-0 link-secondary" href="#"
+                   onclick="document.getElementById('logoutForm').submit()">Logout</a>
                 <form id="logoutForm" th:action="@{/logout}" method="post" style="display: none;"></form>
             </div>
         </div>
@@ -290,29 +292,26 @@
                                 <div class="tab-pane fade" id="nav-new_user" role="tabpanel"
                                      aria-labelledby="nav-new_user-tab" tabindex="0">
                                     <div class="card">
-                                        <h6 class="card-header">Add new user</h6>
+                                        <div class="d-flex card-header justify-content-between">
+                                            <h6>Add new user</h6>
+                                            <strong id="responseMessage" style="display:none;"></strong>
+                                        </div>
                                         <div class="card-body">
                                             <div class="d-flex justify-content-center">
-                                                <form id="registration_form" class="form-control-lg w-25"
-                                                      th:method="POST" th:action="@{/admin/register}"
-                                                      th:object="${user}">
+                                                <form id="registration_form" class="form-control-lg w-25">
                                                     <div class="md-3 text-center">
-                                                        <label for="_name" class="form-label">Username:</label>
-                                                        <input type="text" th:field="*{username}" id="_name"
-                                                               class="form-control" minlength="2" maxlength="10"
-                                                               required/>
-                                                        <p id="errorMessage" class="fs-6 text-danger"
-                                                           style="display: none;" role="alert"></p>
+                                                        <label for="_username" class="form-label">Username:</label>
+                                                        <input type="text" id="_username" class="form-control"
+                                                               minlength="2" maxlength="10" required/>
                                                     </div>
                                                     <div class="mb-3 text-center">
                                                         <label for="_password" class="form-label">Password:</label>
-                                                        <input type="password" th:field="*{password}" id="_password"
-                                                               class="form-control" required/>
+                                                        <input type="password" id="_password" class="form-control"
+                                                               required/>
                                                     </div>
                                                     <div class="mb-3 text-center">
                                                         <label for="_email" class="form-label">Email:</label>
-                                                        <input type="email" th:field="*{email}" id="_email"
-                                                               class="form-control" required/>
+                                                        <input type="email" id="_email" class="form-control" required/>
                                                     </div>
                                                     <div class="mb-3 text-center">
                                                         <label for="new_user_tab_roles" class="form-label">Role</label>
@@ -383,6 +382,6 @@
     </comment>
 </div>
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/registerUserNoReload.js}"></script>
+<script th:src="@{/js/registerUser.js}"></script>
 </body>
 </html>

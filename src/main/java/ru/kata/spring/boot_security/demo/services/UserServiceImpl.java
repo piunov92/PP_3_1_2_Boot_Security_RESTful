@@ -4,6 +4,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.dto.UserDto;
+import ru.kata.spring.boot_security.demo.errors.UserAlreadyExistsException;
+import ru.kata.spring.boot_security.demo.errors.UserNotFoundException;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
@@ -38,7 +41,7 @@ public class UserServiceImpl implements UserService {
         if (userOptional.isPresent()) {
             return userOptional.get();
         } else {
-            throw new RuntimeException("User not found.");
+            throw new UserNotFoundException(id);
         }
     }
 
@@ -49,12 +52,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void registerUser(User user, List<String> roleNames) {
-        if (userRepository.findByUsername(user.getUsername()) != null) {
-            throw new IllegalStateException("User already exists");
+    public User createUser(UserDto userDto) {
+        if (userRepository.findByUsername(userDto.getUsername()) != null) {
+            throw new UserAlreadyExistsException(userDto.getUsername());
         }
         Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
+        for (String roleName : userDto.getRoles()) {
             Role role = roleRepository.findByName(roleName).orElse(null);
             if (role == null) {
                 role = new Role(roleName);
@@ -62,8 +65,8 @@ public class UserServiceImpl implements UserService {
             }
             roles.add(role);
         }
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
-        userRepository.save(new User(user.getUsername(), encodedPassword, user.getEmail(), roles));
+        String encodedPassword = passwordEncoder.encode(userDto.getPassword());
+        return userRepository.save(new User(userDto.getUsername(), encodedPassword, userDto.getEmail(), roles));
     }
 
     @Override
