@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (response.ok) {
                 responseMessage.textContent = responseText;
                 responseMessage.style.color = "green";
+                await loadUsers();
                 form.reset();
             } else {
                 responseMessage.textContent = "Error: " + responseText.replace("{\"error\": ", "").replace("}", "");
@@ -40,6 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             responseMessage.style.display = "block";
+            setTimeout(() => {
+                responseMessage.style.display = "none";
+            }, 1000);
         } catch (error) {
             console.error("Ошибка при отправке запроса:", error);
             const responseMessage = document.getElementById("responseMessage");

@@ -34,4 +34,10 @@ public class UserApiController {
         userService.createUser(userDto);
         return new ResponseEntity<>("User created successfully", HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
+    }
 }
