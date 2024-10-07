@@ -24,7 +24,8 @@ document.getElementById("confirmDeleteBtn").addEventListener("click", async func
             method: 'DELETE'
         });
 
-            const deleteResponseMessage = document.getElementById("deleteResponseMessage");
+        const deleteResponseMessage = document.getElementById("deleteResponseMessage");
+
         if (response.ok) {
             deleteResponseMessage.textContent = "User deleted successfully!";
             deleteResponseMessage.style.color = "green";

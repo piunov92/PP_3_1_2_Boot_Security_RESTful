@@ -71,25 +71,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateUser(Long id, User user, List<String> roleNames) throws Exception {
-        User foundUser = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("User not found."));
+    public void updateUser(Long id, UserDto userDto) {
+        User foundUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
 
-        if (!foundUser.getUsername().equals(user.getUsername())) {
-            Optional<User> userWithSameUsername = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+        if (!foundUser.getUsername().equals(userDto.getUsername())) {
+            Optional<User> userWithSameUsername = Optional.ofNullable(userRepository.findByUsername(userDto.getUsername()));
             if (userWithSameUsername.isPresent()) {
-                throw new Exception("Username " + user.getUsername() + " is already taken");
+                throw new UserAlreadyExistsException(userDto.getUsername());
             }
         }
-        foundUser.setUsername(user.getUsername());
-        foundUser.setEmail(user.getEmail());
+        foundUser.setUsername(userDto.getUsername());
+        foundUser.setEmail(userDto.getEmail());
 
-        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            String encodedPassword = passwordEncoder.encode(userDto.getPassword());
             foundUser.setPassword(encodedPassword);
         }
 
         Set<Role> roles = new HashSet<>();
-        for (String roleName : roleNames) {
+        for (String roleName : userDto.getRoles()) {
             Role role = roleRepository.findByName(roleName).orElse(null);
             if (role != null) {
                 roles.add(role);
@@ -102,6 +102,40 @@ public class UserServiceImpl implements UserService {
         foundUser.setRoles(roles);
         userRepository.save(foundUser);
     }
+
+//    @Override
+//    @Transactional
+//    public void updateUser(Long id, User user, List<String> roleNames) throws Exception {
+//        User foundUser = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+//
+//        if (!foundUser.getUsername().equals(user.getUsername())) {
+//            Optional<User> userWithSameUsername = Optional.ofNullable(userRepository.findByUsername(user.getUsername()));
+//            if (userWithSameUsername.isPresent()) {
+//                throw new Exception("Username " + user.getUsername() + " is already taken");
+//            }
+//        }
+//        foundUser.setUsername(user.getUsername());
+//        foundUser.setEmail(user.getEmail());
+//
+//        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+//            String encodedPassword = passwordEncoder.encode(user.getPassword());
+//            foundUser.setPassword(encodedPassword);
+//        }
+//
+//        Set<Role> roles = new HashSet<>();
+//        for (String roleName : roleNames) {
+//            Role role = roleRepository.findByName(roleName).orElse(null);
+//            if (role != null) {
+//                roles.add(role);
+//            } else {
+//                role = new Role(roleName);
+//                roleRepository.save(role);
+//                roles.add(role);
+//            }
+//        }
+//        foundUser.setRoles(roles);
+//        userRepository.save(foundUser);
+//    }
 
     @Override
     public void deleteUser(Long id) {

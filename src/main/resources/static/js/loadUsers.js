@@ -20,7 +20,8 @@ async function loadUsers() {
                         <button type="button" class="btn btn-primary"
                                 style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: 1.5rem; --bs-btn-font-size: 1.1rem;"
                                 data-bs-toggle="modal"
-                                th:data-bs-target="'#edit_modal_'+${user.id}">Edit
+                                data-bs-target="#edit_modal"
+                                onclick='editUser(${JSON.stringify(user)})'>Edit
                         </button>
                         <button type="button" class="btn btn-danger"
                                 style="--bs-btn-padding-y: .25rem; --bs-btn-font-size: 1.1rem;"

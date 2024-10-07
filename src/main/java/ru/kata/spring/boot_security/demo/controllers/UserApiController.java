@@ -40,4 +40,10 @@ public class UserApiController {
         userService.deleteUser(id);
         return new ResponseEntity<>("User deleted successfully", HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateUser(@PathVariable("id") Long id, @RequestBody UserDto userDto) {
+        userService.updateUser(id, userDto);
+        return new ResponseEntity<>("User updated successfully", HttpStatus.OK);
+    }
 }

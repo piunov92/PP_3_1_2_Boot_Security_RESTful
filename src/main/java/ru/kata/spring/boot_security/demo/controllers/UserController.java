@@ -40,13 +40,13 @@ public class UserController {
         return "admin/index";
     }
 
-    @PostMapping("/admin/update/{id}")
-    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
-        try {
-            userService.updateUser(id, user, roleNames);
-            return "redirect:/admin";
-        } catch (Exception ignored) {
-        }
-        return "redirect:/admin";
-    }
+//    @PostMapping("/admin/update/{id}")
+//    public String updateUser(@PathVariable Long id, @ModelAttribute("user") User user, @RequestParam List<String> roleNames, Model model) {
+//        try {
+//            userService.updateUser(id, user, roleNames);
+//            return "redirect:/admin";
+//        } catch (Exception ignored) {
+//        }
+//        return "redirect:/admin";
+//    }
 }
